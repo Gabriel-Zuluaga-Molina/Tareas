@@ -1,0 +1,266 @@
+---
+title: "ggplot 2 exercises"
+author: "Gabriel Zuluaga Molina"
+format: html
+editor: visual
+light: flaty
+dark: darkly
+toc: true
+number-sections: true
+code-fold: true
+code-tools: true
+code-overflow: wrap
+code-copy: true
+embled-resources: true
+reference-location: margin
+lang: es
+---
+
+## Ejercícios con ggplot2
+
+### Primero se creará el dataframe a usar
+
+```{r}
+# se importa la libreria ggplot2
+library(ggplot2)
+
+# creamos el dataframe a usar
+students <- data.frame(
+ id = 1:20,
+ hours_study = c(2,3,4,5,6,3,4,7,8,5,6,7,3,2,9,10,4,6,8,5),
+ score = c(50,55,65,70,75,60,66,80,85,72,74,78,58,52,90,95,67,76,88,73),
+ gender = rep(c("Male","Female"), 10),
+ major = rep(c("ingenieria","negocios","arte","ciencia"), 5))
+```
+
+```{r}
+# creacion de scatterplot de horas de estudio vs nota
+
+ggplot(data = students) +
+  #aca se genera el scatterplot, que variables se usan, el
+  #tamaño y el color de los puntos(fijo para todos)
+  geom_point(mapping = (aes(x=hours_study, y = score, size = 4)), color= "steelblue") +
+  # se le da el nomre a las variables, titulo y subtitulo
+  geom_rug() +
+  labs(x = "horas de estudio", y = "nota(puntaje)", caption = "Cada punto representa un estudiante", title = "Puntuacion obtenida respecto a las horas de estudio del estudiante", subtitle = "Scatterplot que lo explica:") +
+  # se le dice que el tema sea oscuro(el fondo se verá negro)
+  theme_dark()
+```
+
+```{r}
+# el color se pone desde el "aes" para poder usar una variable
+# del dataframe para darle el color a los puntos
+ggplot(students, aes(x = hours_study, y = score, color = gender)) +
+  #tamaño de los puntos
+  geom_point(size = 5) +
+  geom_rug() +
+  labs(x = "horas de estudio", y = "nota(puntaje)", caption = "Cada punto representa un estudiante", title = "Puntuacion obtenida respecto a las horas de estudio del estudiante y su genero", subtitle = "Scatterplot que lo explica:") +
+  # se le da el tema "minimal" para generar el estilo de cuadricula
+  theme_minimal() +
+  theme( #centrar el titulo
+    plot.title = element_text(hjust = 0.5),
+    # Estilo de titulos de los ejes
+   axis.title.x = element_text(size = 12, face = "bold", color = "darkgray"),
+   axis.title.y = element_text(size = 12, face = "bold", color = "darkgray"),
+   # se quita la leyenda
+   leyend.position = "right"
+        ) +
+  #linea de regresion lineal
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    size = 1,
+    linetype = "solid"
+  ) +
+    labs(title = "Puntuaciones por Género con Datos Individuales",
+       x = "Género estudiante", y = "Puntaje obtenido") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+```
+
+## Boxplot
+
+```{r}
+#base de datos a usar y cuales van a ser los dos datos a enfrentar
+ggplot(students, aes(x = gender, y = score, fill = gender)) +
+  #alpha es la opacidad
+  #outlier.color es el color de los valores atipicos
+  # outlier.shape el 17 indica un triangulo
+  #size es el grososr de las lineas
+  geom_boxplot(alpha = 0.3 , outlier.color = "red", outlier.shape = 17, size = 0.8)
+```
+
+## Histograma
+
+```{r}
+
+# Histograma básico de score
+# el valor independiente es el puntaje
+ggplot(students, aes(x = score)) +
+  #aca se genera el histograma
+  geom_histogram(
+    bins = 10,                   # Número de intervalos (bins)
+    fill = "steelblue",          # Color de relleno de las barras
+    color = "white",             # Color del borde de las barras
+    alpha = 0.8                  # Transparencia
+  ) +
+  labs(
+    #titulos y subtitulos del histograma ademas del nombre de los dos ejes a comparar
+    title = "Frecuencia de las puntaciones ",
+    subtitle = "sin tener en cuenta el genero de los estudiantes",
+    x = "Puntaje obtenido",
+    y = "Frecuencia"
+  ) +
+  theme_minimal() +
+  theme(
+    #centrar el titulo y darle tamaño
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    #centrar el subtitulo(hjust = 0.5), darle color y tamaño
+    plot.subtitle = element_text(hjust = 0.5, color = "gray40", size = 10),
+    #tamaño al titulo de la variable independiente
+    axis.title.x = element_text(size = 12, face = "bold"),
+    #tamaño al titulo de la variable al comparar
+    axis.title.y = element_text(size = 12, face = "bold")
+  )
+```
+
+### con mas bins
+
+```{r}
+# Histograma básico de score
+# el valor independiente es el puntaje
+ggplot(students, aes(x = score)) +
+  #aca se genera el histograma
+  geom_histogram(
+    bins = 20,                   # Número de intervalos (bins)
+    fill = "steelblue",          # Color de relleno de las barras
+    color = "white",             # Color del borde de las barras
+    alpha = 0.8                  # Transparencia
+  ) +
+  labs(
+    #titulos y subtitulos del histograma ademas del nombre de los dos ejes a comparar
+    title = "Frecuencia de las puntaciones (más detallada) ",
+    subtitle = "sin tener en cuenta el genero de los estudiantes",
+    x = "Puntaje obtenido",
+    y = "Frecuencia"
+  ) +
+  theme_minimal() +
+  theme(
+    #centrar el titulo y darle tamaño
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    #centrar el subtitulo(hjust = 0.5), darle color y tamaño
+    plot.subtitle = element_text(hjust = 0.5, color = "gray40", size = 10),
+    #tamaño al titulo de la variable independiente
+    axis.title.x = element_text(size = 12, face = "bold"),
+    #tamaño al titulo de la variable al comparar
+    axis.title.y = element_text(size = 12, face = "bold")
+  )
+```
+
+## Scatter plots afectados por "major"
+
+```{r}
+#se le da la base de datos y la variable a los dos ejes
+ggplot(students, aes(x = hours_study, y = score, color = gender)) +
+  #tamaño
+  geom_point(size = 3, alpha = 0.8) +
+  
+  # Crear facetas por la variable 'major'
+  facet_wrap(~ major, ncol = 2) +  # 2 columnas, filas automáticas
+  
+  labs(
+    title = "Relación entre Horas de Estudio y Puntaje obtenido por Carrera y genero",
+    subtitle = "Cada panel representa una especialidad académica",
+    x = "Horas de Estudio",
+    y = "Puntaje obtenido",
+    # se aplicaran los colores automaticos del genero masculino y femenino
+    color = "Género"
+  ) +
+  theme_minimal() +
+  theme(
+    # ajustar titulo
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    # ajustar subtitulo y darle color
+    plot.subtitle = element_text(hjust = 0.5, color = "gray40", size = 10),
+    # ajustar los titulos de los ejes
+    axis.title.x = element_text(size = 11, face = "bold"),
+    axis.title.y = element_text(size = 11, face = "bold"),
+    strip.text = element_text(face = "bold", size = 10, color = "white"),  # Etiquetas de facetas
+    strip.background = element_rect(fill = "darkgreen"),                   # Fondo de etiquetas
+    legend.position = "bottom"
+  ) +
+  scale_color_brewer(palette = "Set1")  # Colores distintivos para género
+```
+
+### Ahora con facet_grid()
+
+```{r}
+ggplot(students, aes(x = hours_study, y = score)) +
+  geom_point(size = 3, alpha = 0.8, color = "steelblue") +
+  
+  # facet_grid: filas ~ columnas
+  facet_grid(gender ~ major) +  # gender en filas, major en columnas
+  
+  labs(
+    # Titulos
+    title = "Horas de Estudio vs Puntaje obtenido: Género × Carrera",
+    subtitle = "Cada panel representa una combinación única de género y su carrera",
+    x = "Horas de Estudio",
+    y = "Puntaje obtenido"
+  ) +
+  theme_minimal() +
+  theme(
+    # Titulos
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray40", size = 10),
+    # Titulos ejes
+    axis.title.x = element_text(size = 11, face = "bold"),
+    axis.title.y = element_text(size = 11, face = "bold"),
+    
+    # Personalizar etiquetas de facetas
+    strip.text = element_text(face = "bold", size = 9, color = "white"),
+    strip.background = element_rect(fill = "blue"),
+    
+    # Ajustar márgenes para mejor lectura
+    panel.spacing = unit(0.5, "lines")
+  )
+```
+
+## Scatter plot más detallado\|
+
+```{r}
+ggplot(students, aes(x = hours_study, y = score, 
+                     color = gender,    #  Color mapeado a género
+                     size = score)) +   #  Tamaño mapeado a puntuación
+  geom_point(alpha = 0.7) +             # Transparencia para evitar saturación visual
+  
+  #  Línea de regresión global (color fijo para no interferir con el mapeo de color)
+  geom_smooth(
+    aes(x = hours_study, y = score),  
+    method = "lm", 
+    se = TRUE,                          # Mostrar intervalo de confianza
+    color = "black",                    # Línea negra para contraste
+    linetype = "dashed", 
+    size = 0.8,
+  ) +
+  
+  labs(
+    # Titulos
+    title = "Horas de Estudio vs Puntuación",
+    subtitle = "Color = Género | Tamaño = Puntuación | Línea punteada = Regresión lineal",
+    x = "Horas de Estudio",
+    y = "Puntuación (Score)",
+    color = "Género",
+    size = "Puntuación"
+  ) +
+  theme_minimal() +
+  
+  # Personalizaciones adicionales para mejor legibilidad
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray40", size = 10),
+    legend.position = "right",
+    legend.box = "vertical"
+  ) 
+```

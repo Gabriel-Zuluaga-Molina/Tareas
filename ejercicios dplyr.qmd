@@ -1,0 +1,128 @@
+---
+title: "ejercicios dplyr"
+author: "Gabriel Zuluaga Molina"
+format: html
+editor: visual
+light: flaty
+dark: darkly
+toc: true
+number-sections: true
+code-fold: true
+code-tools: true
+code-overflow: wrap
+code-copy: true
+embled-resources: true
+reference-location: margin
+lang: es
+---
+
+## Librerias
+
+```{r}
+library(dplyr)
+library(gapminder)
+```
+
+## Respuestas
+
+```{r}
+# seleccionar solamente las variables pais, año y expectativa de vida
+gapminder %>%
+  select(country, year, lifeExp)
+
+# filtrar por año 2007
+gapminder %>%
+  filter(year == 2007)
+
+# filtrar por continente Asia
+gapminder %>%
+  filter(continent == "Asia")
+
+# filtrar por expectativa de vida mayor a 70 años
+gapminder %>%
+  filter(lifeExp > 70)
+
+# ordenar la base de datos por orden de esperanza de vida de menor a mayor
+gapminder %>%
+  arrange(lifeExp)
+
+# ordenar la base de datos por GDP per capita en orden descendiente
+gapminder %>%
+  arrange(desc(gdpPercap))
+
+# crear una nueva columna
+gapminder %>%
+  mutate(gdp_total = gdpPercap * pop)
+
+# filtrar de la base de datos los paises con poblacion mayor a 100 millones de habitantes en 2007
+
+gapminder %>%
+  filter(year == 2007, pop > 100000000)
+
+# seleccionar paises de europa y mostrar en pantalla solo el país y el gdpPercap
+gapminder %>% 
+  filter(continent == "Europe")  %>% 
+  select(country, gdpPercap)
+
+# mostrar la esperanza de vida promedio en los 5 continentes segun la base de datos
+gapminder  %>% 
+  group_by(continent)  %>% 
+  summarise(avgerage_life_expct = mean(lifeExp))
+
+# mostrar el gdpPercap promedio por año en los 5 continentes
+gapminder  %>% 
+  group_by(continent, year)  %>% 
+  summarise(avgerage_gdpPercap = mean(gdpPercap))
+
+# mostrar la esperanza de vida maxima en los 5 continentes
+gapminder  %>% 
+  group_by(continent)  %>% 
+  summarise(max_life_expect = max(lifeExp))
+
+# Cantidad de paises por cada continente
+gapminder   %>% 
+  group_by(continent)  %>% 
+  summarise(num_countries = n_distinct(country))
+
+# Poblacion total del continente
+gapminder   %>% 
+  group_by(continent)  %>% 
+  summarise(population = sum(pop))
+
+# expectativa de vida promedio en America por años
+gapminder %>% 
+  filter(continent == "Americas")  %>% 
+  group_by(year) %>%
+  summarise(average_life_expct = mean(lifeExp))
+
+# mostrar los 10 paises con mejor gdpPercap en 2007
+gapminder %>% 
+  filter(year == 2007) %>% 
+  arrange(desc(gdpPercap)) %>% 
+  slice_head(n = 10) %>% 
+  select(country, continent, gdpPercap)
+# mostrar los paises con mayor esperanza de vida de cada año
+gapminder %>% 
+  group_by(year) %>% 
+  slice_max(lifeExp, n = 1) %>% 
+  select(country,lifeExp, year) %>% 
+  ungroup()
+# mediana del gdpPercap de cada continente
+gapminder %>% 
+  group_by(continent) %>% 
+  summarise(media_gdpPercapita = median(gdpPercap))
+
+# mostrar el cambio de esperanza de vida en todos los paises de 1952 a 2007
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  select(country, year, lifeExp) %>%
+  tidyr::pivot_wider(names_from = year, values_from = lifeExp) %>%
+  group_by(country)
+# mostrar los 5 paises con mayor incremento del gdpPercap a lo largo de los años
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  group_by(country) %>%
+  summarise(gdpPercap_change = gdpPercap[year == 2007] - gdpPercap[year == 1952], .groups = "drop") %>%
+  arrange(desc(gdpPercap_change)) %>%
+  slice_head(n = 5)
+```
