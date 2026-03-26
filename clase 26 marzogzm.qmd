@@ -1,0 +1,172 @@
+---
+title: "clase 26 marzogzm"
+author: "Gabriel Zuluaga Molina"
+format: html
+editor: visual
+light: flaty
+dark: darkly
+toc: true
+number-sections: true
+code-fold: true
+code-tools: true
+code-overflow: wrap
+code-copy: true
+embled-resources: true
+reference-location: margin
+lang: es
+---
+
+```{r}
+# importo la libreria lattice
+library(lattice)
+
+# dataframe
+str(iris)
+
+# sacatterplot
+xyplot(Sepal.Length ~ Petal.Length,
+       data = iris)
+
+
+xyplot(Sepal.Length + Sepal.Width ~ Petal.Length + Petal.Width | Species,
+       data = iris, scales = "free", layout = c(2, 2),
+       auto.key = list(x = .75, y = .75, corner = c(0.5, 0.5)))
+
+
+xyplot(Sepal.Length ~ Petal.Length,
+       data = iris,
+       group = Species,
+       auto.key = TRUE)
+
+xyplot(Sepal.Length ~ Petal.Length,
+       data = iris,
+       type = c("p", "g", "smooth"),
+       xlab = "Petal.Length",
+       ylab = "Sepal.Length")
+
+
+xyplot(Sepal.Length ~ Petal.Length | Species,
+       group = Species,
+       data = iris,
+       type = c("p", "smooth"),
+       scales = "free", par.settings = list(strip.background = list(col = c('green'))))
+
+
+plot1 <- xyplot(Sepal.Length ~ Petal.Length | Species,
+       group = Species,
+       data = iris,
+       type = c("p", "smooth"),
+       scales = "free", par.settings = list(strip.background = list(col = c('green'))))
+suppressWarnings(print(plot1))
+
+
+
+#nube de puntos
+
+cloud(Sepal.Length ~ Sepal.Length*Petal.Width,
+      data = iris)
+```
+
+```{r}
+str(ToothGrowth)
+
+# Boxplot
+
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+bwplot(len ~ dose, data = ToothGrowth,
+       xlab = "Dose",
+       ylab = "Length")
+
+bwplot(len ~ supp|dose,
+       data = ToothGrowth,
+       layout = c(3,1),
+       xlab = "Dose",
+       ylab = "Length",, par.settings = list(strip.background = list(col = c('green'))))
+
+bwplot(len ~ dose, data = ToothGrowth,
+           xlab = "Dose",
+           ylab = "Length",
+           panel = panel.violin)
+
+dotplot(len ~ dose,
+        data = ToothGrowth,
+        xlab = "Dose",
+        ylab = "Length")
+```
+
+```{r}
+students = read.csv("https://userpage.fu-berlin.de/soga/data/raw-data/students.csv")
+str(students)
+
+# Peso x altura por sexo
+students100 <- students[1:100, ]
+xyplot(height ~ weight | gender,
+  data = students100,
+  ylab = "Height in cm",
+  xlab = "Weight in kg", par.settings = list(strip.background = list(col = c('green')))
+)
+
+# Peso x altura por religion
+
+xyplot(height ~ weight | religion,
+  data = students100,
+  ylab = "Height in cm",
+  xlab = "Weight in kg", par.settings = list(strip.background = list(col = c('green')))
+)
+
+# Peso x altura por religion y sexo
+
+xyplot(height ~ weight | religion * gender,
+  data = students100,
+  ylab = "Height in cm",
+  xlab = "Weight in kg", par.settings = list(strip.background = list(col = c('salmon', 'steelblue')))
+)
+
+
+```
+
+```{r}
+str(Titanic)
+
+# Tabla o Array
+Tdf <- as.data.frame(Titanic)
+Tdf
+barchart(Class ~ Freq | Sex + Age, data=as.data.frame(Titanic), groups=Survived, stack=TRUE, layout=c(4,1), auto.key=list(title="Survived", columns=2))
+
+densityplot(~ len, data = ToothGrowth, plot.points = FALSE)
+```
+
+```{r}
+str(faithful)
+densityplot( ~ eruptions, data=faithful)
+
+densityplot( ~ eruptions, data=faithful, kernel = "rect", bw=0.2, plot.points ="rug", n=200)
+
+
+matrix(1:4, 2,2)
+
+arr = array(1:24 , dim = c( 4, 3, 2))
+arr
+
+
+
+histogram(~ len, data = ToothGrowth, 
+          breaks = 20)
+
+
+str(VADeaths)
+class(VADeaths)
+VADeaths
+
+dotplot(VADeaths, groups=FALSE)
+
+
+barchart(VADeaths, groups=FALSE, layout=c(1,4), aspect=0.4, reference=FALSE, main="Tasa de mortalidad en Virginia",xlab="tasa(por 100)")
+
+
+
+xyplot(lat ~ long | cut(depth,2), data = quakes)
+
+
+xyplot(lat ~ long | cut(depth,3), data = quakes, aspect="iso", pch=".", cex=2, type=c("p","g"),xlab="longitud", ylab = "latitud")
+```
